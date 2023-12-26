@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-qqurl-bypass",
-  "description": "绕过官方QQ的url检测",
-  "version": "0.0.1",
+  "description": "绕过官方QQ机器人的url检测",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -16,6 +16,6 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "4.16.1"
+    "koishi": "^4.16.1"
   }
 }

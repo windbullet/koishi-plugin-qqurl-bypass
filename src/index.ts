@@ -1,11 +1,12 @@
 import { Context, Schema } from 'koishi'
-import { before } from 'node:test'
 
 export const name = 'qqurl-bypass'
 
 export interface Config {
   mode: 'unicode' | 'space' | 'fullStop'
 }
+
+export const usage = '更新日志：https://forum.koishi.xyz/t/topic/6300'
 
 export const Config: Schema<Config> = Schema.object({
   mode: Schema.union([
@@ -21,16 +22,25 @@ export const Config: Schema<Config> = Schema.object({
 
 export function apply(ctx: Context, config: Config) {
   ctx.on("before-send", (session) => {
-    switch (config.mode) {
-      case 'unicode':
-        session.content = session.content.replace(/\./g, "‎.")
-        break
-      case 'space':
-        session.content = session.content.replace(/\./g, " .")
-        break
-      case 'fullStop':
-        session.content = session.content.replace(/\./g, "。")
-        break
+    console.log(session.elements)
+    let elements = []
+    for (let element of session.elements) {
+      if (element.type === 'text') {
+        switch (config.mode) {
+          case 'unicode':
+            element.attrs.content = element.attrs.content.replaceAll(/\./g, "‎.")
+            break
+          case 'space':
+            element.attrs.content = element.attrs.content.replaceAll(/\./g, " .")
+            break
+          case 'fullStop':
+            element.attrs.content = element.attrs.content.replaceAll(/\./g, "。")
+            break
+        }
+      }
+      elements.push(element)
     }
+    session.elements = elements
+    console.log(session.elements)
   })
 }

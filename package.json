@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-qqurl-bypass",
   "description": "绕过官方QQ机器人的url检测",
-  "version": "0.2.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -9,12 +9,17 @@
     "dist"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/windbullet/koishi-plugin-qqurl-bypass",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windbullet/koishi-plugin-qqurl-bypass.git"
+  },
   "keywords": [
     "chatbot",
     "koishi",
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.16.1"
+    "koishi": "^4.17.9"
   }
 }

@@ -13,7 +13,7 @@ export const Config: Schema<Config> = Schema.object({
     Schema.const('unicode').description('点号前插入unicode字符（不可见所以无痕，但复制访问不方便）'),
     Schema.const('space').description('点号前插入空格（复制访问相对来说方便些）'),
     Schema.const('fullStop').description('点号替换为中文句号（可直接复制访问）'),
-    Schema.const('remove').description('移除URL')
+    Schema.const('remove').description('移除消息中所有URL')
   ])
     .description('绕过模式')
     .required()

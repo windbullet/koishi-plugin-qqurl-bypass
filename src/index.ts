@@ -23,7 +23,6 @@ export const Config: Schema<Config> = Schema.object({
 
 export function apply(ctx: Context, config: Config) {
   ctx.on("before-send", (session) => {
-    console.log(session.elements)
     let elements = []
     for (let element of session.elements) {
       if (element.type === 'text') {

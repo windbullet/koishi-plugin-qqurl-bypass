@@ -44,6 +44,5 @@ export function apply(ctx: Context, config: Config) {
       elements.push(element)
     }
     session.elements = elements
-    console.log(session.elements)
   })
 }

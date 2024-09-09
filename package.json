@@ -21,5 +21,8 @@
   ],
   "peerDependencies": {
     "koishi": "^4.17.9"
+  },
+  "dependencies": {
+    "tlds": "^1.254.0"
   }
 }

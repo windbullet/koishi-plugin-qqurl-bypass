@@ -1,11 +1,11 @@
-import { Context, Schema } from 'koishi'
+import { Context, Schema, Element } from 'koishi'
 import tlds from "tlds";
 
 export const name = 'qqurl-bypass'
 
 export interface Config {
   mode: 'unicode' | 'space' | 'fullStop' | 'remove'
-  whiteList: string []
+  whiteList: string[]
 }
 
 export const usage = '更新日志：https://forum.koishi.xyz/t/topic/6300'
@@ -40,17 +40,24 @@ export function apply(ctx: Context, config: Config) {
     "g",
   )
 
-  ctx.on("before-send", (session) => {
-    if (session.platform !== "qq") return;
-    for (const { attrs, type } of session.elements) {
-      if (type !== 'text') return;
-      attrs.content = attrs.content.replaceAll(
+  function sanitizeDomains(elements: Element[]) {
+    for (const { attrs, type, children } of elements) {
+      if (type !== "text") {
+        if (children.length) sanitizeDomains(children);
+        continue;
+      }
+      attrs.content = (attrs.content as string).replaceAll(
         domainRegExp,
         (domain: string) => {
-          if(whiteList.includes(domain)) return domain;
-          return domain.replaceAll(".", replacer)
-        }
+          if (whiteList.includes(domain)) return domain;
+          return domain.replaceAll(".", "。");
+        },
       );
     }
+  }
+
+  ctx.on("before-send", (session) => {
+    if (session.platform !== "qq") return;
+    sanitizeDomains(session.elements);
   })
 }

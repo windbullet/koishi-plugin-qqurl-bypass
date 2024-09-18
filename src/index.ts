@@ -50,7 +50,7 @@ export function apply(ctx: Context, config: Config) {
         domainRegExp,
         (domain: string) => {
           if (whiteList.includes(domain)) return domain;
-          return domain.replaceAll(".", "。");
+          return domain.replaceAll(".", replacer);
         },
       );
     }

@@ -4,7 +4,7 @@ import tlds from "tlds";
 export const name = 'qqurl-bypass'
 
 export interface Config {
-  mode: 'unicode' | 'space' | 'fullStop' | 'remove'
+  mode: 'unicode' | 'space' | 'fullStop' | 'remove' | 'uppercase'
   whiteList: string[]
 }
 
@@ -15,7 +15,8 @@ export const Config: Schema<Config> = Schema.object({
     Schema.const('unicode').description('点号前插入unicode字符（不可见所以无痕，但复制访问不方便）'),
     Schema.const('space').description('点号前插入空格（复制访问相对来说方便些）'),
     Schema.const('fullStop').description('点号替换为中文句号（可直接复制访问）'),
-    Schema.const('remove').description('移除消息中所有URL')
+    Schema.const('remove').description('移除消息中所有URL'),
+    Schema.const('uppercase').description('域名纯大写模式')
   ])
     .description('绕过模式')
     .required()
@@ -47,11 +48,21 @@ export function apply(ctx: Context, config: Config) {
         continue;
       }
       attrs.content = (attrs.content as string).replaceAll(
-        domainRegExp,
-        (domain: string) => {
-          if (whiteList.includes(domain)) return domain;
-          return domain.replaceAll(".", replacer);
-        },
+        /(https?:\/\/)((?:[A-Za-z0-9]+\.)+(?:[A-Za-z]{2,}))(\/.*)?/g,
+        (match: string, protocol: string, domain: string, path: string = "") => {
+          if (whiteList.includes(domain)) return match;
+
+          if (config.mode === 'uppercase') {
+            return `${protocol}${domain.toUpperCase()}${path}`;
+          } else if (config.mode === 'remove') {
+            return '';
+          } else {
+            return match.replaceAll(domainRegExp, (domain: string) => {
+              if (whiteList.includes(domain)) return domain;
+              return domain.replaceAll(".", replacer);
+            });
+          }
+        }
       );
     }
   }

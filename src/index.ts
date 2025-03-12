@@ -48,19 +48,16 @@ export function apply(ctx: Context, config: Config) {
         continue;
       }
       attrs.content = (attrs.content as string).replaceAll(
-        /(https?:\/\/)((?:[A-Za-z0-9]+\.)+(?:[A-Za-z]{2,}))(\/.*)?/g,
-        (match: string, protocol: string, domain: string, path: string = "") => {
-          if (whiteList.includes(domain)) return match;
+        domainRegExp,
+        (domain: string) => {
+          if (whiteList.includes(domain)) return domain;
 
           if (config.mode === 'uppercase') {
-            return `${protocol}${domain.toUpperCase()}${path}`;
+            return `${domain.toUpperCase()}`;
           } else if (config.mode === 'remove') {
             return '';
           } else {
-            return match.replaceAll(domainRegExp, (domain: string) => {
-              if (whiteList.includes(domain)) return domain;
-              return domain.replaceAll(".", replacer);
-            });
+            return domain.replaceAll(".", replacer);
           }
         }
       );
@@ -68,7 +65,7 @@ export function apply(ctx: Context, config: Config) {
   }
 
   ctx.on("before-send", (session) => {
-    if (session.platform !== "qq") return;
+    // if (session.platform !== "qq") return;
     sanitizeDomains(session.elements);
   })
 }

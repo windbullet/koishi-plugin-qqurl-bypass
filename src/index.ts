@@ -4,7 +4,7 @@ import tlds from "tlds";
 export const name = 'qqurl-bypass'
 
 export interface Config {
-  mode: 'unicode' | 'space' | 'fullStop' | 'remove' | 'uppercase'
+  mode: 'unicode' | 'space' | 'fullStop' | 'remove' | 'uppercase' | 'tldUppercase'
   whiteList: string[]
 }
 
@@ -16,7 +16,8 @@ export const Config: Schema<Config> = Schema.object({
     Schema.const('space').description('点号前插入空格（复制访问相对来说方便些）'),
     Schema.const('fullStop').description('点号替换为中文句号（可直接复制访问）'),
     Schema.const('remove').description('移除消息中所有URL'),
-    Schema.const('uppercase').description('域名纯大写模式')
+    Schema.const('uppercase').description('大写模式 1：域名纯大写'),
+    Schema.const('tldUppercase').description('大写模式 2：顶级域名大写')
   ])
     .description('绕过模式')
     .required()
@@ -56,6 +57,10 @@ export function apply(ctx: Context, config: Config) {
             return `${domain.toUpperCase()}`;
           } else if (config.mode === 'remove') {
             return '';
+          } else if (config.mode === 'tldUppercase') {
+            const parts = domain.split('.');
+            const tld = parts.pop();
+            return `${parts.join('.')}.${tld.toUpperCase()}`;
           } else {
             return domain.replaceAll(".", replacer);
           }
